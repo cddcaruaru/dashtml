@@ -187,6 +187,11 @@ function formatMinutes(min){
   const h=Math.floor(a/60), m=a%60;
   return `${sign}${h}h${String(m).padStart(2,"0")}`;
 }
+function minToHHMM(min){
+  const a=Math.abs(Math.round(min));
+  const h=String(Math.floor(a/60)).padStart(2,"0"), m=String(a%60).padStart(2,"0");
+  return `${h}:${m}`;
+}
 function median(arr){
   if(!arr.length) return null;
   const a=[...arr].sort((x,y)=>x-y), mid=Math.floor(a.length/2);
@@ -289,7 +294,7 @@ function renderTrend(){
   for(let i=0;i<=4;i++){
     const v=min+(max-min)*(4-i)/4, y=Y(v);
     ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
-    ctx.fillText(`${Math.round(v)}m`,4,y+4);
+    ctx.fillText(minToHHMM(v),4,y+4);
   }
   ctx.strokeStyle="#36d9ff";ctx.lineWidth=2.5;ctx.beginPath();
   data.forEach((d,i)=>{const x=X(i),y=Y(d.mean);i?ctx.lineTo(x,y):ctx.moveTo(x,y);trendPoints.push({x,y,d});});ctx.stroke();
