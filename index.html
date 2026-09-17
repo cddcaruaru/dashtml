@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TML Caruaru | Transportadora 10</title>
+<style>
+:root{
+  --bg:#061225; --panel:#0b1d35; --panel2:#102845; --line:#1e4770;
+  --text:#f4f8ff; --muted:#8fa8c4; --cyan:#36d9ff; --gold:#ffc83d;
+  --green:#48df9b; --red:#ff6b7a; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{margin:0;background:
+ radial-gradient(circle at 85% 0%,rgba(54,217,255,.10),transparent 28%),
+ radial-gradient(circle at 0% 100%,rgba(255,200,61,.07),transparent 25%),
+ var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select{font:inherit}
+.shell{max-width:1540px;margin:auto;padding:28px}
+.header{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:24px}
+.eyebrow{color:var(--cyan);font-size:12px;letter-spacing:.16em;font-weight:800;text-transform:uppercase}
+h1{font-size:clamp(26px,3vw,42px);line-height:1.06;margin:7px 0 8px;letter-spacing:-.035em}
+.subtitle{color:var(--muted);max-width:800px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{border:1px solid var(--line);background:#0a1a2e;border-radius:999px;padding:7px 11px;color:#cfe5f6;font-size:12px}
+.badge strong{color:var(--gold)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:1px solid var(--line);border-radius:12px;padding:11px 14px;background:#0b2039;color:var(--text);cursor:pointer;font-weight:750;transition:.15s}
+.btn:hover{transform:translateY(-1px);border-color:#3f769f}
+.btn.primary{background:linear-gradient(135deg,#13badf,#1789c5);border-color:transparent;color:#02121d}
+.btn.danger{color:#ffb4bd}
+.file{display:none}
+.toolbar{display:grid;grid-template-columns:1.2fr repeat(3,minmax(150px,.55fr));gap:12px;background:rgba(11,29,53,.88);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-bottom:18px}
+.field label{display:block;color:var(--muted);font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.08em;margin:0 0 7px}
+.field input,.field select{width:100%;background:#07182b;border:1px solid #21496c;color:var(--text);border-radius:11px;padding:10px 12px;outline:none}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(54,217,255,.08)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.card{background:linear-gradient(180deg,rgba(16,40,69,.95),rgba(9,28,51,.95));border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-height:126px;position:relative;overflow:hidden}
+.card:after{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(54,217,255,.13);border-radius:50%;right:-35px;top:-30px}
+.card .label{color:var(--muted);font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.08em}
+.card .value{font-size:31px;font-weight:850;letter-spacing:-.04em;margin-top:8px}
+.card .hint{color:#9eb3ca;font-size:12px;margin-top:5px}
+.value.cyan{color:var(--cyan)} .value.gold{color:var(--gold)} .value.green{color:var(--green)}
+.grid{display:grid;grid-template-columns:1.55fr .85fr;gap:14px;margin-bottom:18px}
+.panel{background:rgba(11,29,53,.94);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:17px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:12px}
+.panel-title{font-size:15px;font-weight:800}
+.panel-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.legend{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:11px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--cyan);margin-right:5px}
+canvas{width:100%;height:300px;display:block}
+.distribution canvas{height:300px}
+.table-panel{padding:0;overflow:hidden}
+.table-top{padding:17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:center}
+.table-wrap{overflow:auto;max-height:520px}
+table{border-collapse:collapse;width:100%;min-width:930px;font-size:12px}
+th{position:sticky;top:0;z-index:2;background:#0c223b;color:#9fc4df;text-transform:uppercase;letter-spacing:.07em;font-size:10px;text-align:left;padding:11px 12px;border-bottom:1px solid #224665}
+td{padding:10px 12px;border-bottom:1px solid rgba(34,70,101,.55);color:#d8e6f2;white-space:nowrap}
+tr:hover td{background:rgba(54,217,255,.025)}
+.tml{font-weight:800}
+.tml.good{color:var(--green)} .tml.warn{color:var(--gold)} .tml.bad{color:var(--red)}
+.status{display:inline-flex;padding:4px 7px;border-radius:999px;background:#0a2339;border:1px solid #214d6e;color:#b7d5e7;font-size:10px;font-weight:750}
+.empty{padding:50px;text-align:center;color:var(--muted)}
+.footer{color:#64839f;font-size:11px;margin:16px 2px;text-align:right}
+.kpi-rule{display:flex;gap:8px;align-items:center;color:#9cb5cb;font-size:12px}
+.rule-pill{border:1px solid #285875;color:#b5def0;background:#082037;border-radius:999px;padding:5px 9px}
+@media(max-width:1000px){
+ .header{flex-direction:column}.actions{justify-content:flex-start}
+ .toolbar{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+ .shell{padding:16px}.toolbar,.cards{grid-template-columns:1fr}.card{min-height:110px}
+ h1{font-size:29px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="header">
+    <div>
+      <div class="eyebrow">Performance de Saída</div>
+      <h1><span style="color:var(--gold)">TML Caruaru</span></h1>
+      <div class="subtitle">Tempo entre a hora matinal planejada e a saída efetiva do mapa. A base é filtrada automaticamente para os critérios operacionais definidos.</div>
+      <div class="badges">
+        <span class="badge">Transportadora <strong>10</strong></span>
+        <span class="badge">Frota <strong>Padrão</strong></span>
+        <span class="badge">Cálculo <strong>HrSai − HrMatinal</strong></span>
+      </div>
+    </div>
+    <div class="actions">
+      <label class="btn primary" for="csvFile">Importar CSV</label>
+      <input class="file" id="csvFile" type="file" accept=".csv,text/csv">
+      <button class="btn" id="exportBtn">Exportar filtrado</button>
+      <button class="btn danger" id="clearBtn">Limpar base local</button>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div class="field"><label>Pesquisar mapa / placa</label><input id="search" placeholder="Ex.: 573582 ou UHK4I48"></div>
+    <div class="field"><label>Data inicial</label><input type="date" id="dateStart"></div>
+    <div class="field"><label>Data final</label><input type="date" id="dateEnd"></div>
+    <div class="field"><label>Tipo de carga</label><select id="cargaFilter"><option value="">Todas</option></select></div>
+  </section>
+
+  <section class="cards">
+    <div class="card"><div class="label">TML médio</div><div id="kpiMean" class="value cyan">—</div><div class="hint">média de HrSai − HrMatinal</div></div>
+    <div class="card"><div class="label">TML mediano</div><div id="kpiMedian" class="value gold">—</div><div class="hint">menos sensível a saídas muito tardias</div></div>
+    <div class="card"><div class="label">Mapas analisados</div><div id="kpiCount" class="value">—</div><div class="hint">após filtros do painel</div></div>
+    <div class="card"><div class="label">Saída até +60 min</div><div id="kpi60" class="value green">—</div><div class="hint">percentual dos mapas com TML ≤ 60 min</div></div>
+  </section>
+
+  <section class="grid">
+    <div class="panel">
+      <div class="panel-head">
+        <div><div class="panel-title">Evolução diária do TML</div><div class="panel-sub">Média diária em minutos; passe o mouse para consultar.</div></div>
+        <div class="legend"><span><span class="dot"></span>TML médio</span></div>
+      </div>
+      <canvas id="trend"></canvas>
+    </div>
+    <div class="panel distribution">
+      <div class="panel-head">
+        <div><div class="panel-title">Distribuição de saída</div><div class="panel-sub">Faixas de TML dos mapas selecionados.</div></div>
+      </div>
+      <canvas id="dist"></canvas>
+    </div>
+  </section>
+
+  <section class="panel table-panel">
+    <div class="table-top">
+      <div><div class="panel-title">Detalhamento dos mapas</div><div id="tableSub" class="panel-sub">—</div></div>
+      <div class="kpi-rule"><span class="rule-pill">≤ 60 min</span><span class="rule-pill">61–120 min</span><span class="rule-pill">&gt; 120 min</span></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Data saída</th><th>Mapa</th><th>Placa</th><th>Carga</th><th>Hora matinal</th><th>HrSai</th><th>TML</th><th>Classificação</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div id="empty" class="empty" style="display:none">Nenhum registro encontrado com os filtros atuais.</div>
+    </div>
+  </section>
+  <div class="footer" id="footerInfo"></div>
+</div>
+
+<script>
+const STORAGE_KEY = "dashboard_tml_transportadora10_v1";
+const INITIAL_DATA = [{"mapa":"573582","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:18","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573608","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:03","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573598","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:01","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573588","placa":"QYD5580","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:31","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573591","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:01","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573594","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 07:55","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573601","placa":"QYD5880","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:02","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573604","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:10","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573585","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:36","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573605","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 07:53","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573581","placa":"PDB0903","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 10:21","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573583","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:24","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573603","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:05","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573600","placa":"PDB2023","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:10","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573590","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 07:50","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573607","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:17","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573606","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:03","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573599","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 07:50","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573521","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"31/08/2026 08:02","data":"01092026","dataEntrega":"31082026","transp":"010","frota":"Padrao"},{"mapa":"573550","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"31/08/2026 08:03","data":"01092026","dataEntrega":"31082026","transp":"010","frota":"Padrao"},{"mapa":"573587","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 07:58","data":"01092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573586","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 07:59","data":"02092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573629","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:14","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573638","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:00","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573645","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 07:52","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573627","placa":"QYD5420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:30","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573654","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 07:59","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573640","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:41","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573651","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 07:51","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573650","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:16","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573602","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:01","data":"02092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573636","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 07:53","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573625","placa":"PDB0903","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 10:11","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573628","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:14","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573631","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:23","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573641","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 07:50","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573643","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:43","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573584","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 09:48","data":"02092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573649","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:01","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573626","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:34","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573624","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:00","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573647","placa":"QYD5580","carga":"Recarga","hrMatinal":"07:30","hrSai":"02/09/2026 12:18","data":"02092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573610","placa":"JBS8I06","carga":"Recarga","hrMatinal":"07:30","hrSai":"01/09/2026 14:19","data":"02092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573685","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:08","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573664","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:31","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573530","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"31/08/2026 08:01","data":"03092026","dataEntrega":"31082026","transp":"010","frota":"Padrao"},{"mapa":"573683","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 07:56","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573688","placa":"QYD5420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 07:45","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573679","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:07","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573693","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 09:35","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573680","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 07:53","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573666","placa":"PDB0903","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 10:11","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573556","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"31/08/2026 08:10","data":"03092026","dataEntrega":"31082026","transp":"010","frota":"Padrao"},{"mapa":"573691","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:44","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573652","placa":"PDB2023","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:21","data":"03092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573686","placa":"PDB2023","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:54","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573632","placa":"PDB2573","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:15","data":"03092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573677","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 07:58","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573689","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:22","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573681","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 07:51","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573642","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"02/09/2026 08:51","data":"03092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573668","placa":"QYD5300","carga":"Extra","hrMatinal":"07:30","hrSai":"03/09/2026 07:56","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573669","placa":"QYD5670","carga":"Extra","hrMatinal":"07:30","hrSai":"03/09/2026 07:50","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573670","placa":"QYD4490","carga":"Extra","hrMatinal":"07:30","hrSai":"03/09/2026 07:55","data":"03092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573609","placa":"RZT1A40","carga":"Roteriz","hrMatinal":"07:30","hrSai":"01/09/2026 08:04","data":"03092026","dataEntrega":"01092026","transp":"010","frota":"Padrao"},{"mapa":"573559","placa":"RZT0J80","carga":"Roteriz","hrMatinal":"07:30","hrSai":"31/08/2026 08:06","data":"03092026","dataEntrega":"31082026","transp":"010","frota":"Padrao"},{"mapa":"573735","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:49","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573734","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:54","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573737","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:56","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573743","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 08:18","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573745","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:41","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573674","placa":"QYD5880","carga":"Roteriz","hrMatinal":"08:30","hrSai":"03/09/2026 09:01","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573739","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:41","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573740","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 09:00","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573678","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:18","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573741","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:56","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573732","placa":"PDB0903","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 09:52","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573726","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 08:29","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573644","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 09:01","data":"04092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573736","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:53","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573665","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 09:13","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573725","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:46","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573742","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:44","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573690","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 07:53","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573667","placa":"PDB4223","carga":"Extra","hrMatinal":"07:30","hrSai":"03/09/2026 08:04","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573687","placa":"PDB4223","carga":"Recarga","hrMatinal":"07:30","hrSai":"04/09/2026 12:56","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573648","placa":"PDB2573","carga":"Recarga","hrMatinal":"07:30","hrSai":"04/09/2026 12:56","data":"04092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573639","placa":"PDB2783","carga":"Recarga","hrMatinal":"07:30","hrSai":"02/09/2026 14:24","data":"04092026","dataEntrega":"02092026","transp":"010","frota":"Padrao"},{"mapa":"573738","placa":"PDB2783","carga":"Recarga","hrMatinal":"07:30","hrSai":"04/09/2026 14:03","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573731","placa":"PDB3703","carga":"Recarga","hrMatinal":"07:30","hrSai":"04/09/2026 13:42","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573662","placa":"RZT1A40","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 08:26","data":"04092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573560","placa":"RZT1A60","carga":"Roteriz","hrMatinal":"07:30","hrSai":"31/08/2026 08:26","data":"04092026","dataEntrega":"31082026","transp":"010","frota":"Padrao"},{"mapa":"573766","placa":"RZT0J80","carga":"Extra","hrMatinal":"07:30","hrSai":"04/09/2026 10:31","data":"04092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573779","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:33","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573724","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:57","data":"05092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573796","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:14","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573783","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:16","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573744","placa":"QYD5420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 08:15","data":"05092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573784","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:56","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573777","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:05","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573790","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 09:09","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573775","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 09:34","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573782","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:49","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573746","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"04/09/2026 07:45","data":"05092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573772","placa":"PDB0903","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 10:17","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573776","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:15","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573805","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 09:40","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573793","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:01","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573792","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:14","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573786","placa":"PDB2833","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:19","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573780","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:11","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573794","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:20","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573785","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:02","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573791","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:24","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573773","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:08","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573684","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 08:13","data":"05092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573774","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:54","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573797","placa":"QYD6020","carga":"Extra","hrMatinal":"07:30","hrSai":"05/09/2026 08:03","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573747","placa":"PCF2B08","carga":"Extra","hrMatinal":"07:30","hrSai":"04/09/2026 08:08","data":"05092026","dataEntrega":"04092026","transp":"010","frota":"Padrao"},{"mapa":"573663","placa":"JBS8I06","carga":"Roteriz","hrMatinal":"07:30","hrSai":"03/09/2026 09:03","data":"05092026","dataEntrega":"03092026","transp":"010","frota":"Padrao"},{"mapa":"573804","placa":"RZT1A40","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 09:54","data":"05092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573837","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:56","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573841","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:57","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573856","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:54","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573858","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:58","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573844","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:58","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573808","placa":"QYD5880","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:35","data":"08092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573836","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:59","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573832","placa":"PDB0903","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 10:05","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573834","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:18","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573854","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:21","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573845","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:17","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573849","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:41","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573842","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:46","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573850","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:19","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573857","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:11","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573835","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:48","data":"08092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573795","placa":"DOT6640","carga":"Recarga","hrMatinal":"07:30","hrSai":"05/09/2026 13:22","data":"08092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573915","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 07:53","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573852","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 07:46","data":"09092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573897","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:00","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573899","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 07:57","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573896","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 07:51","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573903","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:00","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573908","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 07:56","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573840","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:22","data":"09092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573838","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:31","data":"09092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573904","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:35","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573905","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 07:55","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573893","placa":"PDB0903","carga":"Roteriz","hrMatinal":"10:00","hrSai":"09/09/2026 10:13","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573907","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:02","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573892","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 07:54","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573910","placa":"PDB2833","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:23","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573833","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 10:07","data":"09092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573914","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:01","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573901","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:20","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573891","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:02","data":"09092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573848","placa":"QYD5420","carga":"Recarga","hrMatinal":"07:30","hrSai":"08/09/2026 12:52","data":"09092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573787","placa":"RZT1A60","carga":"Recarga","hrMatinal":"07:30","hrSai":"09/09/2026 08:37","data":"09092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573830","placa":"RZT1A40","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:23","data":"09092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573806","placa":"RZT0J80","carga":"Roteriz","hrMatinal":"07:30","hrSai":"05/09/2026 08:22","data":"09092026","dataEntrega":"05092026","transp":"010","frota":"Padrao"},{"mapa":"573950","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 07:51","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573956","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 07:59","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573938","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 07:56","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573948","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 09:10","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573943","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:15","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573947","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 07:59","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573953","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:50","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573946","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 07:59","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573935","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:14","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573963","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 09:32","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573931","placa":"PDB0903","carga":"Roteriz","hrMatinal":"10:00","hrSai":"10/09/2026 10:46","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573937","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:06","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573902","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:52","data":"10092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573909","placa":"PDB2573","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:33","data":"10092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573945","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 09:18","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573847","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"08/09/2026 08:29","data":"10092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"573912","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 08:26","data":"10092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573933","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:51","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573959","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 07:46","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573965","placa":"QYD6760","carga":"Extra","hrMatinal":"07:30","hrSai":"10/09/2026 09:47","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573916","placa":"PCF2B08","carga":"Extra","hrMatinal":"07:30","hrSai":"09/09/2026 09:20","data":"10092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573958","placa":"PDB1563","carga":"Recarga","hrMatinal":"07:30","hrSai":"10/09/2026 15:31","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573944","placa":"PDB2573","carga":"Recarga","hrMatinal":"07:30","hrSai":"10/09/2026 15:18","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573952","placa":"RZT0J80","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:27","data":"10092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573878","placa":"JBS8I06","carga":"Recarga","hrMatinal":"07:30","hrSai":"08/09/2026 13:19","data":"10092026","dataEntrega":"08092026","transp":"010","frota":"Padrao"},{"mapa":"574022","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:03","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573964","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:32","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573999","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:28","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574003","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:53","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573911","placa":"QYD5580","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 10:31","data":"11092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"574001","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:10","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574017","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:04","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574020","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:52","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574036","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:57","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573995","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:26","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574000","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:54","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573998","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:55","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573994","placa":"PDB0903","carga":"Roteriz","hrMatinal":"10:00","hrSai":"11/09/2026 10:09","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573961","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 15:53","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"574007","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:52","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573934","placa":"PDB2023","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:40","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573997","placa":"PDB2573","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:45","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573955","placa":"PDB2833","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:26","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573954","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:41","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573996","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:56","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573900","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 09:06","data":"11092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"573932","placa":"QYO8A15","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:51","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"573930","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:57","data":"11092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"574024","placa":"QYD6760","carga":"Extra","hrMatinal":"07:30","hrSai":"11/09/2026 08:07","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574002","placa":"QYD5420","carga":"Recarga","hrMatinal":"07:30","hrSai":"11/09/2026 15:20","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574006","placa":"DOT6640","carga":"Recarga","hrMatinal":"07:30","hrSai":"11/09/2026 15:42","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574012","placa":"PDB2023","carga":"Recarga","hrMatinal":"07:30","hrSai":"11/09/2026 14:18","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574004","placa":"PDB2783","carga":"Recarga","hrMatinal":"07:30","hrSai":"11/09/2026 12:27","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573993","placa":"JBS8I06","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:43","data":"11092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574062","placa":"UHK4I48","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:01","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574072","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:53","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574091","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:46","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574071","placa":"QYD5670","carga":"Roteriz","hrMatinal":"08:30","hrSai":"12/09/2026 09:24","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574087","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:43","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574105","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:51","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574090","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:46","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574089","placa":"QYQ0H78","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:45","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574023","placa":"QYD4490","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:15","data":"12092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574069","placa":"JBS8I06","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:01","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574106","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:44","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574059","placa":"PDB0903","carga":"Roteriz","hrMatinal":"10:00","hrSai":"12/09/2026 10:06","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574011","placa":"PDB4223","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 07:55","data":"12092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574088","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:22","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574068","placa":"PDB2023","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:43","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574085","placa":"PDB2573","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:51","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574019","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:20","data":"12092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574076","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:00","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574060","placa":"PDB2833","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:54","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574016","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:37","data":"12092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574063","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:59","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574070","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 07:47","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574074","placa":"QYO8B65","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:17","data":"12092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"573960","placa":"PDB2683","carga":"Recarga","hrMatinal":"07:30","hrSai":"12/09/2026 15:00","data":"12092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"574013","placa":"QYO8A15","carga":"Recarga","hrMatinal":"07:30","hrSai":"12/09/2026 08:12","data":"12092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573991","placa":"RZT0J80","carga":"Roteriz","hrMatinal":"07:30","hrSai":"12/09/2026 08:17","data":"12092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"573957","placa":"RZT1A40","carga":"Roteriz","hrMatinal":"07:30","hrSai":"10/09/2026 08:32","data":"12092026","dataEntrega":"10092026","transp":"010","frota":"Padrao"},{"mapa":"574110","placa":"PDB2023","carga":"Roteriz","hrMatinal":"07:30","hrSai":"13/09/2026 07:51","data":"13092026","dataEntrega":"13092026","transp":"010","frota":"Padrao"},{"mapa":"574109","placa":"QYD6020","carga":"Extra","hrMatinal":"07:30","hrSai":"13/09/2026 07:58","data":"13092026","dataEntrega":"13092026","transp":"010","frota":"Padrao"},{"mapa":"574086","placa":"UHJ6F39","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 07:59","data":"14092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574132","placa":"PCA8H54","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:30","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574140","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:29","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574157","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:44","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574133","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:08","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574142","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:26","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574119","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:13","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574127","placa":"RZT0J80","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:25","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574136","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:47","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574123","placa":"PDB0903","carga":"Roteriz","hrMatinal":"10:00","hrSai":"14/09/2026 09:59","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574129","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:28","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574124","placa":"PDB2573","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:41","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574139","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:24","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"573913","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"09/09/2026 09:01","data":"14092026","dataEntrega":"09092026","transp":"010","frota":"Padrao"},{"mapa":"574131","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:15","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574130","placa":"PDB2833","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 07:52","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574143","placa":"PDB3663","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:23","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574135","placa":"PDB3703","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:32","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574141","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:18","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574061","placa":"PDB3I13","carga":"Roteriz","hrMatinal":"07:30","hrSai":"14/09/2026 08:27","data":"14092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574078","placa":"QYD6760","carga":"Extra","hrMatinal":"07:30","hrSai":"12/09/2026 07:42","data":"14092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574144","placa":"QYD6760","carga":"Extra","hrMatinal":"07:30","hrSai":"14/09/2026 08:18","data":"14092026","dataEntrega":"14092026","transp":"010","frota":"Padrao"},{"mapa":"574114","placa":"DOT6640","carga":"Extra","hrMatinal":"08:30","hrSai":"13/09/2026 08:22","data":"14092026","dataEntrega":"13092026","transp":"010","frota":"Padrao"},{"mapa":"574064","placa":"RZT1A40","carga":"Recarga","hrMatinal":"07:30","hrSai":"12/09/2026 12:12","data":"14092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574066","placa":"RZT1A40","carga":"Recarga","hrMatinal":"07:30","hrSai":"14/09/2026 12:44","data":"14092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"573992","placa":"RZT1A60","carga":"Roteriz","hrMatinal":"07:30","hrSai":"11/09/2026 08:27","data":"14092026","dataEntrega":"11092026","transp":"010","frota":"Padrao"},{"mapa":"574193","placa":"QYD5300","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:06","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574188","placa":"QYD5670","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:11","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574205","placa":"QYD5790","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:04","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574195","placa":"QYD6020","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 07:59","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574190","placa":"QYD4420","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:00","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574103","placa":"RZT1A60","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:26","data":"15092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"},{"mapa":"574207","placa":"DOT6640","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 07:58","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574196","placa":"PDB1563","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:33","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574200","placa":"PDB2683","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 07:50","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574186","placa":"PDB2783","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:02","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574203","placa":"PDB2833","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 07:56","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574201","placa":"PDB3873","carga":"Roteriz","hrMatinal":"07:30","hrSai":"15/09/2026 08:01","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574192","placa":"QYQ0H78","carga":"Recarga","hrMatinal":"07:30","hrSai":"15/09/2026 15:02","data":"15092026","dataEntrega":"15092026","transp":"010","frota":"Padrao"},{"mapa":"574065","placa":"RZT0J80","carga":"Recarga","hrMatinal":"07:30","hrSai":"14/09/2026 14:52","data":"15092026","dataEntrega":"12092026","transp":"010","frota":"Padrao"}];
+
+const $ = s => document.querySelector(s);
+let rows = [];
+let filtered = [];
+let trendPoints = [];
+let hoverTrendIndex = -1;
+
+function normalizeText(v){
+  return String(v ?? "").trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+function parseDateTimeBR(s){
+  const m=String(s||"").trim().match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{1,2}):(\d{2})/);
+  if(!m) return null;
+  return new Date(+m[3],+m[2]-1,+m[1],+m[4],+m[5],0,0);
+}
+function parseHM(s){
+  const m=String(s||"").trim().match(/^(\d{1,2}):(\d{2})/);
+  return m ? {h:+m[1],m:+m[2]} : null;
+}
+function enrich(r){
+  const dt=parseDateTimeBR(r.hrSai);
+  const hm=parseHM(r.hrMatinal);
+  if(!dt || !hm) return {...r, tml:null, dateISO:""};
+  const base=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate(),hm.h,hm.m,0,0);
+  return {...r, tml:Math.round((dt-base)/60000), dateISO:localISO(dt), dateObj:dt};
+}
+function localISO(d){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function formatDateISO(iso){
+  if(!iso) return "—";
+  const [y,m,d]=iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+function formatMinutes(min){
+  if(min==null || Number.isNaN(min)) return "—";
+  const sign=min<0?"−":"";
+  const a=Math.abs(Math.round(min));
+  if(a<60) return `${sign}${a} min`;
+  const h=Math.floor(a/60), m=a%60;
+  return `${sign}${h}h${String(m).padStart(2,"0")}`;
+}
+function minToHHMM(min){
+  const a=Math.abs(Math.round(min));
+  const h=String(Math.floor(a/60)).padStart(2,"0"), m=String(a%60).padStart(2,"0");
+  return `${h}:${m}`;
+}
+function median(arr){
+  if(!arr.length) return null;
+  const a=[...arr].sort((x,y)=>x-y), mid=Math.floor(a.length/2);
+  return a.length%2?a[mid]:(a[mid-1]+a[mid])/2;
+}
+function save(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(rows.map(({dateObj,...r})=>r))); }catch(e){
+    alert("Não foi possível salvar a base no armazenamento local deste navegador.");
+  }
+}
+function load(){
+  let stored=null;
+  try{ stored=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null"); }catch(e){}
+  const source=Array.isArray(stored)&&stored.length ? stored : INITIAL_DATA;
+  rows=source.map(enrich);
+  if(!(Array.isArray(stored)&&stored.length)){ save(); }
+  setupFilters();
+  render();
+}
+function setupFilters(){
+  const dates=rows.map(r=>r.dateISO).filter(Boolean).sort();
+  if(dates.length){
+    $("#dateStart").value=dates[0];
+    $("#dateEnd").value=dates[dates.length-1];
+    $("#dateStart").min=$("#dateEnd").min=dates[0];
+    $("#dateStart").max=$("#dateEnd").max=dates[dates.length-1];
+  }
+  const cargas=[...new Set(rows.map(r=>r.carga).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  $("#cargaFilter").innerHTML='<option value="">Todas</option>'+cargas.map(c=>`<option>${escapeHtml(c)}</option>`).join("");
+}
+function getFiltered(){
+  const q=normalizeText($("#search").value);
+  const start=$("#dateStart").value, end=$("#dateEnd").value, carga=$("#cargaFilter").value;
+  return rows.filter(r=>{
+    if(start && r.dateISO<start) return false;
+    if(end && r.dateISO>end) return false;
+    if(carga && r.carga!==carga) return false;
+    if(q && !normalizeText(`${r.mapa} ${r.placa}`).includes(q)) return false;
+    return r.tml!==null;
+  });
+}
+function render(){
+  filtered=getFiltered();
+  const vals=filtered.map(r=>r.tml).filter(Number.isFinite);
+  const mean=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
+  const med=median(vals);
+  const pct60=vals.length?100*vals.filter(v=>v<=60).length/vals.length:null;
+  $("#kpiMean").textContent=formatMinutes(mean);
+  $("#kpiMedian").textContent=formatMinutes(med);
+  $("#kpiCount").textContent=filtered.length.toLocaleString("pt-BR");
+  $("#kpi60").textContent=pct60==null?"—":`${pct60.toFixed(1).replace(".",",")}%`;
+  $("#tableSub").textContent=`${filtered.length.toLocaleString("pt-BR")} mapas exibidos • critérios fixos: Transportadora 10 / Frota Padrão`;
+  $("#footerInfo").textContent=`Dados persistidos neste navegador • ${rows.length.toLocaleString("pt-BR")} registros na base local`;
+  renderTable();
+  renderTrend();
+  renderDist();
+}
+function renderTable(){
+  const body=$("#tbody"), empty=$("#empty");
+  const sorted=[...filtered].sort((a,b)=>(b.dateObj||0)-(a.dateObj||0) || a.mapa.localeCompare(b.mapa));
+  if(!sorted.length){body.innerHTML="";empty.style.display="block";return}
+  empty.style.display="none";
+  body.innerHTML=sorted.map(r=>{
+    let cls="good", label="Até 60 min";
+    if(r.tml>120){cls="bad";label="Acima de 120 min"} else if(r.tml>60){cls="warn";label="61–120 min"}
+    if(r.tml<0){cls="good";label="Saída antecipada"}
+    const time=(r.hrSai.split(" ")[1]||r.hrSai);
+    return `<tr>
+      <td>${formatDateISO(r.dateISO)}</td><td><strong>${escapeHtml(r.mapa||"—")}</strong></td>
+      <td>${escapeHtml(r.placa||"—")}</td><td>${escapeHtml(r.carga||"—")}</td>
+      <td>${escapeHtml(r.hrMatinal||"—")}</td><td>${escapeHtml(time||"—")}</td>
+      <td class="tml ${cls}">${formatMinutes(r.tml)}</td><td><span class="status">${label}</span></td>
+    </tr>`;
+  }).join("");
+}
+function aggregateDaily(){
+  const m=new Map();
+  filtered.forEach(r=>{
+    if(!m.has(r.dateISO))m.set(r.dateISO,[]);
+    m.get(r.dateISO).push(r.tml);
+  });
+  return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([date,v])=>({
+    date, mean:v.reduce((a,b)=>a+b,0)/v.length, count:v.length
+  }));
+}
+function prepCanvas(c){
+  const rect=c.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  c.width=Math.max(1,Math.floor(rect.width*dpr)); c.height=Math.max(1,Math.floor(rect.height*dpr));
+  const ctx=c.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w:rect.width,h:rect.height};
+}
+function renderTrend(){
+  const c=$("#trend"), {ctx,w,h}=prepCanvas(c), data=aggregateDaily(); trendPoints=[];
+  ctx.clearRect(0,0,w,h);
+  if(!data.length){drawNoData(ctx,w,h);return}
+  const pad={l:46,r:18,t:18,b:42};
+  const max=Math.max(60,...data.map(d=>d.mean))*1.15, min=Math.min(0,...data.map(d=>d.mean));
+  const X=i=>pad.l+(data.length===1?(w-pad.l-pad.r)/2:i*(w-pad.l-pad.r)/(data.length-1));
+  const Y=v=>pad.t+(max-v)*(h-pad.t-pad.b)/(max-min||1);
+  ctx.font="11px system-ui";ctx.fillStyle="#7e9ab3";ctx.strokeStyle="#1e4261";ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const v=min+(max-min)*(4-i)/4, y=Y(v);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+    ctx.fillText(minToHHMM(v),4,y+4);
+  }
+  ctx.strokeStyle="#36d9ff";ctx.lineWidth=2.5;ctx.beginPath();
+  data.forEach((d,i)=>{const x=X(i),y=Y(d.mean);i?ctx.lineTo(x,y):ctx.moveTo(x,y);trendPoints.push({x,y,d});});ctx.stroke();
+  trendPoints.forEach((p,i)=>{
+    ctx.beginPath();ctx.fillStyle=i===hoverTrendIndex?"#ffc83d":"#36d9ff";ctx.arc(p.x,p.y,i===hoverTrendIndex?5:3.5,0,Math.PI*2);ctx.fill();
+  });
+  const step=Math.ceil(data.length/7);
+  data.forEach((d,i)=>{if(i%step===0||i===data.length-1){ctx.fillStyle="#7896b1";ctx.textAlign="center";ctx.fillText(formatDateISO(d.date).slice(0,5),X(i),h-16)}});
+  ctx.textAlign="left";
+  if(hoverTrendIndex>=0 && trendPoints[hoverTrendIndex]){
+    const p=trendPoints[hoverTrendIndex], text=`${formatDateISO(p.d.date)}  •  ${formatMinutes(p.d.mean)}  •  ${p.d.count} mapas`;
+    ctx.font="12px system-ui";const tw=ctx.measureText(text).width+18;
+    let bx=Math.min(w-tw-8,Math.max(8,p.x-tw/2)), by=Math.max(8,p.y-42);
+    ctx.fillStyle="#061426";ctx.strokeStyle="#2e668c";ctx.lineWidth=1;
+    roundRect(ctx,bx,by,tw,28,7,true,true);ctx.fillStyle="#eaf7ff";ctx.fillText(text,bx+9,by+18);
+  }
+}
+function renderDist(){
+  const c=$("#dist"), {ctx,w,h}=prepCanvas(c);
+  ctx.clearRect(0,0,w,h);
+  const bins=[
+    {label:"≤ 30m",n:0},{label:"31–60m",n:0},{label:"61–120m",n:0},{label:"> 120m",n:0}
+  ];
+  filtered.forEach(r=>{if(r.tml<=30)bins[0].n++;else if(r.tml<=60)bins[1].n++;else if(r.tml<=120)bins[2].n++;else bins[3].n++});
+  const max=Math.max(...bins.map(b=>b.n),1), pad={l:35,r:12,t:20,b:45}, bw=(w-pad.l-pad.r)/bins.length;
+  bins.forEach((b,i)=>{
+    const bh=(h-pad.t-pad.b)*(b.n/max), x=pad.l+i*bw+bw*.18, y=h-pad.b-bh, ww=bw*.64;
+    const grad=ctx.createLinearGradient(0,y,0,h-pad.b);grad.addColorStop(0,"#36d9ff");grad.addColorStop(1,"#1778ad");
+    ctx.fillStyle=grad;roundRect(ctx,x,y,ww,bh,8,true,false);
+    ctx.fillStyle="#dcecf7";ctx.font="bold 12px system-ui";ctx.textAlign="center";ctx.fillText(String(b.n),x+ww/2,Math.max(14,y-7));
+    ctx.fillStyle="#819db7";ctx.font="10px system-ui";ctx.fillText(b.label,x+ww/2,h-20);
+  });
+  ctx.textAlign="left";
+}
+function drawNoData(ctx,w,h){ctx.fillStyle="#718da8";ctx.font="13px system-ui";ctx.textAlign="center";ctx.fillText("Sem dados para exibir",w/2,h/2);ctx.textAlign="left"}
+function roundRect(ctx,x,y,w,h,r,fill,stroke){
+  if(h<0){y+=h;h=Math.abs(h)} r=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+  if(fill)ctx.fill();if(stroke)ctx.stroke();
+}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function parseCSV(text, delimiter=";"){
+  const out=[];let row=[],field="",q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){
+      if(ch==='"' && text[i+1]==='"'){field+='"';i++}
+      else if(ch==='"'){q=false}
+      else field+=ch;
+    }else{
+      if(ch==='"')q=true;
+      else if(ch===delimiter){row.push(field);field=""}
+      else if(ch==="\n"){row.push(field.replace(/\r$/,""));out.push(row);row=[];field=""}
+      else field+=ch;
+    }
+  }
+  if(field.length||row.length){row.push(field.replace(/\r$/,""));out.push(row)}
+  return out;
+}
+function headerMap(headers){
+  const m={};headers.forEach((h,i)=>m[normalizeText(h)]=i);return m;
+}
+async function importFile(file){
+  const buf=await file.arrayBuffer();
+  let text;
+  try{text=new TextDecoder("windows-1252").decode(buf)}catch(e){text=new TextDecoder("utf-8").decode(buf)}
+  const parsed=parseCSV(text,";");
+  if(parsed.length<2) throw new Error("CSV vazio ou delimitador incompatível.");
+  const hm=headerMap(parsed[0]);
+  const required=["transp","frota","hrmatinal","hrsai","mapa"];
+  const missing=required.filter(k=>hm[k]===undefined);
+  if(missing.length) throw new Error("Colunas obrigatórias não encontradas: "+missing.join(", "));
+  const imported=[];
+  for(let i=1;i<parsed.length;i++){
+    const r=parsed[i]; if(!r.length)continue;
+    const transp=(r[hm.transp]||"").trim();
+    const frota=(r[hm.frota]||"").trim();
+    if((transp.replace(/^0+/,"")||"0")!=="10")continue;
+    if(normalizeText(frota)!=="padrao")continue;
+    imported.push({
+      mapa:(r[hm.mapa]||"").trim(),
+      placa:hm.placa!==undefined?(r[hm.placa]||"").trim():"",
+      carga:hm.cargaatual!==undefined?(r[hm.cargaatual]||"").trim():"",
+      hrMatinal:(r[hm.hrmatinal]||"").trim(),
+      hrSai:(r[hm.hrsai]||"").trim(),
+      data:hm.data!==undefined?(r[hm.data]||"").trim():"",
+      dataEntrega:hm.dataentrega!==undefined?(r[hm.dataentrega]||"").trim():"",
+      transp,frota
+    });
+  }
+  if(!imported.length) throw new Error("Nenhum registro de Transportadora 10 + Frota Padrão foi encontrado.");
+  rows=imported.map(enrich);save();setupFilters();render();
+  alert(`${imported.length} mapas importados e salvos localmente no navegador.`);
+}
+$("#csvFile").addEventListener("change",async e=>{
+  const f=e.target.files?.[0];if(!f)return;
+  try{await importFile(f)}catch(err){alert("Falha ao importar: "+err.message)}
+  e.target.value="";
+});
+["search","dateStart","dateEnd","cargaFilter"].forEach(id=>$("#"+id).addEventListener(id==="search"?"input":"change",render));
+$("#clearBtn").addEventListener("click",()=>{
+  if(!confirm("Remover a base persistida deste navegador?"))return;
+  localStorage.removeItem(STORAGE_KEY);rows=[];setupFilters();render();
+});
+$("#exportBtn").addEventListener("click",()=>{
+  const header=["DataSaida","Mapa","Placa","CargaAtual","HrMatinal","HrSai","TML_min"];
+  const lines=[header.join(";"),...filtered.map(r=>[
+    formatDateISO(r.dateISO),r.mapa,r.placa,r.carga,r.hrMatinal,r.hrSai,r.tml
+  ].map(csvCell).join(";"))];
+  const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="TML_Transportadora10_FrotaPadrao.csv";a.click();URL.revokeObjectURL(a.href);
+});
+function csvCell(v){const s=String(v??"");return /[;"\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+$("#trend").addEventListener("mousemove",e=>{
+  if(!trendPoints.length)return;
+  const rect=e.currentTarget.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
+  let best=-1,dist=Infinity;trendPoints.forEach((p,i)=>{const d=(p.x-x)**2+(p.y-y)**2;if(d<dist){dist=d;best=i}});
+  hoverTrendIndex=dist<900?best:-1;renderTrend();
+});
+$("#trend").addEventListener("mouseleave",()=>{hoverTrendIndex=-1;renderTrend()});
+window.addEventListener("resize",()=>{renderTrend();renderDist()});
+load();
+</script>
+</body>
+</html>
